@@ -1,5 +1,14 @@
 datos <- read.csv(file = "./Incidencia_Delictiva_Ordenado.csv", encoding = "UTF-8")
 
+#Limitamos nuestros datos a incidencias delictivas registradas en 2020
+library(dplyr)
+datos <- datos[datos$Año == 2020, ]
+datos <- select(datos, Estado, TipoDelito, SubtipoDelito, Modalidad, 
+                BienJuridicoAfectado, 7:18)
+write.csv(datos,'Incidencia_Delictiva_2020.csv', row.names = FALSE, fileEncoding = "UTF-8")
+datos <- read.csv(file = "./Incidencia_Delictiva_2020.csv", encoding = "UTF-8")
+
+
 #=============================== Descripcion de las variables ===============================================
 
 str(datos)
@@ -7,7 +16,6 @@ str(datos)
 ###################################################################
 ##        Variable        #           Tipo           #   Escala  ##
 ###################################################################
-##  Año                   #  Cuantitativa / Discreta # Intervalo ##
 ##  Estado                #        Cualitativa       # Nominal   ##
 ##  TipoDelito            #        Cualitativa       # Ordinal   ##
 ##  SubtipoDelito         #        Cualitativa       # Ordinal   ##
@@ -79,7 +87,7 @@ library(fdth)
 
 range(datos$Septiembre)
 
-(tabla_cuant <- fdt(datos$Septiembre,breaks="Sturges",start=0,end=6500,h=250,right=T))
+(tabla_cuant <- fdt(datos$Septiembre,breaks="Sturges",start=0,end=5750,h=250,right=T))
 
 # Análisis gráfico
 
@@ -96,7 +104,7 @@ dotPlot(na.omit(datos$Septiembre),main="Diagrama de puntos",xlab="Delitos-Septie
 library(plotly)
 plot_ly(datos,x = ~Septiembre, type = "box")
 
-# Se observa que la mayoria de delitos se encuantran entre 0 y 25, pareciera que 
+# Se observa que la mayoria de delitos se encuantran entre 0 y 27, pareciera que 
 # el resto de delitos son outliers. 
 #Claramente la distribución de delitos es asimétrica hacia la derecha. 
 
@@ -106,7 +114,7 @@ summary(datos$Septiembre)
 
 mfv(datos$Septiembre) #Moda
 
-quantile(datos$Septiembre, probs = c(0.05,0.25,0.50,0.75,0.85,0.95,0.99)) #Cuantiles
+quantile(datos$Septiembre, probs = c(0.05,0.25,0.50,0.75,0.85,0.95)) #Cuantiles
 
 IQR(datos$Septiembre) #Amplitud intercuartílica
 
@@ -127,4 +135,3 @@ kurtosis(datos$Septiembre) #Coeficiente de curtosis
 # Grafica de ojiva
 
 #=============================comparación y asociación entre variables======================================
-
