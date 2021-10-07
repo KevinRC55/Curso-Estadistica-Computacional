@@ -29,7 +29,7 @@ str(datos)
 ##  Junio                 #  Cualitativa / Discreta  # Razón     ##
 ##  Julio                 #  Cualitativa / Discreta  # Razón     ##
 ##  Agosto                #  Cualitativa / Discreta  # Razón     ##
-##  Septiembre            #  Cualitativa / Discreta  # Razón     ##
+##  Mayo            #  Cualitativa / Discreta  # Razón     ##
 ##  Octubre               #  Cualitativa / Discreta  # Razón     ##
 ##  Noviembre             #  Cualitativa / Discreta  # Razón     ##
 ##  Diciembre             #  Cualitativa / Discreta  # Razón     ##
@@ -80,57 +80,63 @@ cbind(Variable = names(datos)[3], Moda = moda)
 
 #===========================Análisis descriptivo de variables cuantitativas===================================
 
-#Tabla de frecuencias de la variable Septiembre (Cantidad de delitos registrados en Septimbre)
+#Tabla de frecuencias de la variable Mayo (Cantidad de delitos registrados en Mayo)
 #Usando intervalos de clase
 
 library(fdth)
 
-range(datos$Septiembre)
+range(datos$Mayo)
 
-(tabla_cuant <- fdt(datos$Septiembre,breaks="Sturges",start=0,end=5750,h=250,right=T))
+datos[datos$Mayo > 2000, ]
+
+table(datos$Mayo)
+
+(tabla_cuant <- fdt(datos$Mayo,breaks="Sturges",start=0,end=3750,h=150,right=T))
+
+#Podemos ver que a partir de registros de delitos mayores a 750 incidencias, las frecuencias se reducen 
 
 # Análisis gráfico
 
 ggplot(as.data.frame(tabla_cuant$table), aes(x=`Class limits`, y=f)) +
   geom_bar(stat="identity", color="green4", fill="white") + 
-  labs(title = "Diagrama de barras - Delitos cometido en Septiembre", subtitle = "Frecuencias Absolutas", 
+  labs(title = "Diagrama de barras - Delitos cometido en Mayo", subtitle = "Frecuencias Absolutas", 
        x = NULL, y = NULL) + coord_flip()
 
 library(BHH2)
 
-dotPlot(na.omit(datos$Septiembre),main="Diagrama de puntos",xlab="Delitos-Septiembre",pch=16)
+dotPlot(na.omit(datos$Mayo),main="Diagrama de puntos",xlab="Delitos-Mayo",pch=16)
 
 
 library(plotly)
-plot_ly(datos,x = ~Septiembre, type = "box")
+plot_ly(datos,x = ~Mayo, type = "box")
 
-# Se observa que la mayoria de delitos se encuantran entre 0 y 27, pareciera que 
-# el resto de delitos son outliers. 
+# Se observa que la mayoria de delitos se encuentran entre 0 y 20, pareciera que 
+# el resto de los registros de delitos son valores atípicos. 
 #Claramente la distribución de delitos es asimétrica hacia la derecha. 
 
 # Medidas descriptivas
 
-summary(datos$Septiembre) 
+summary(datos$Mayo) 
 
-mfv(datos$Septiembre) #Moda
+mfv(datos$Mayo) #Moda
 
-quantile(datos$Septiembre, probs = c(0.05,0.25,0.50,0.75,0.85,0.95)) #Cuantiles
+quantile(datos$Mayo, probs = c(0.05,0.25,0.50,0.75,0.85,0.95)) #Cuantiles
 
-IQR(datos$Septiembre) #Amplitud intercuartílica
+IQR(datos$Mayo) #Amplitud intercuartílica
 
-var(datos$Septiembre); sd(datos$Septiembre) #Varianza
+var(datos$Mayo); sd(datos$Mayo) #Varianza
 
-mean(abs(na.omit(datos$Septiembre)-mean(na.omit(datos$Septiembre))))   # error medio (media)
+mean(abs(na.omit(datos$Mayo)-mean(na.omit(datos$Mayo))))   # error medio (media)
 
-mean(abs(datos$Septiembre-median(datos$Septiembre)))  # error medio (mediana)
+mean(abs(datos$Mayo-median(datos$Mayo)))  # error medio (mediana)
 
-sd(datos$Septiembre)/mean(datos$Septiembre) #Coeficiente de variación
+sd(datos$Mayo)/mean(datos$Mayo) #Coeficiente de variación
 
 library(agricolae)
 
-skewness(datos$Septiembre) #Coeficiente de asimetría
+skewness(datos$Mayo) #Coeficiente de asimetría
 
-kurtosis(datos$Septiembre) #Coeficiente de curtosis
+kurtosis(datos$Mayo) #Coeficiente de curtosis
 
 # Grafica de ojiva
 
