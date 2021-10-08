@@ -81,38 +81,56 @@ cbind(Variable = names(datos)[3], Moda = moda)
 #===========================Análisis descriptivo de variables cuantitativas===================================
 
 #Tabla de frecuencias de la variable Mayo (Cantidad de delitos registrados en Mayo)
-#Usando intervalos de clase
 
 library(fdth)
 
 range(datos$Mayo)
 
-datos[datos$Mayo > 2000, ]
-
 table(datos$Mayo)
 
+#Usando intervalos de clase
 (tabla_cuant <- fdt(datos$Mayo,breaks="Sturges",start=0,end=3750,h=150,right=T))
 
 #Podemos ver que a partir de registros de delitos mayores a 750 incidencias, las frecuencias se reducen 
 
 # Análisis gráfico
 
+library(plotly)
+
+#Grafica de barras
 ggplot(as.data.frame(tabla_cuant$table), aes(x=`Class limits`, y=f)) +
   geom_bar(stat="identity", color="green4", fill="white") + 
   labs(title = "Diagrama de barras - Delitos cometido en Mayo", subtitle = "Frecuencias Absolutas", 
        x = NULL, y = NULL) + coord_flip()
 
-library(BHH2)
+#Diagrama de puntos
+plot_ly(datos, x = ~Mayo, type = 'scatter',
+        mode = "markers", marker = list(color = "black")) %>% 
+  layout(title = "Diagram de puntos",
+         xaxis = list(title = "Delitos cometido en Mayo"))
 
-dotPlot(na.omit(datos$Mayo),main="Diagrama de puntos",xlab="Delitos-Mayo",pch=16)
-
-
-library(plotly)
+#Diagrama de caja y brazos  
 plot_ly(datos,x = ~Mayo, type = "box")
 
 # Se observa que la mayoria de delitos se encuentran entre 0 y 20, pareciera que 
 # el resto de los registros de delitos son valores atípicos. 
 #Claramente la distribución de delitos es asimétrica hacia la derecha. 
+
+
+#Veamos los delitos que corresponden algunos datos atipicos
+select(datos[datos$Mayo > 1000, ], Mayo, TipoDelito, Estado)
+
+#Veamos las graficas con un subconjunto de datos
+
+#Diagrama de puntos
+plot_ly(subset(datos, Mayo < 100), x = ~Mayo, type = 'scatter',
+        mode = "markers", marker = list(color = "black")) %>% 
+  layout(title = "Diagram de puntos",
+         xaxis = list(title = "Delitos cometido en Mayo"))
+
+#Diagrama de caja y brazos  
+plot_ly(subset(datos, Mayo < 50),x = ~Mayo, type = "box")
+
 
 # Medidas descriptivas
 
