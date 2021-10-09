@@ -88,8 +88,10 @@ range(datos$Mayo)
 
 table(datos$Mayo)
 
+length(datos$Mayo)
+
 #Usando intervalos de clase
-(tabla_cuant <- fdt(datos$Mayo,breaks="Sturges",start=0,end=3750,h=150,right=T))
+(tabla_mayo <- fdt(datos$Mayo,breaks="Sturges",start=0,end=3750,h=150,right=T))
 
 #Podemos ver que a partir de registros de delitos mayores a 750 incidencias, las frecuencias se reducen 
 
@@ -98,7 +100,7 @@ table(datos$Mayo)
 library(plotly)
 
 #Grafica de barras
-ggplot(as.data.frame(tabla_cuant$table), aes(x=`Class limits`, y=f)) +
+ggplot(as.data.frame(tabla_mayo$table), aes(x=`Class limits`, y=f)) +
   geom_bar(stat="identity", color="green4", fill="white") + 
   labs(title = "Diagrama de barras - Delitos cometido en Mayo", subtitle = "Frecuencias Absolutas", 
        x = NULL, y = NULL) + coord_flip()
@@ -138,7 +140,7 @@ summary(datos$Mayo)
 
 mfv(datos$Mayo) #Moda
 
-quantile(datos$Mayo, probs = c(0.05,0.25,0.50,0.75,0.85,0.95)) #Cuantiles
+quantile(datos$Mayo, probs = c(0.20,0.40,0.60,0.80)) #Cuantiles
 
 IQR(datos$Mayo) #Amplitud intercuartílica
 
@@ -158,4 +160,43 @@ kurtosis(datos$Mayo) #Coeficiente de curtosis
 
 # Grafica de ojiva
 
+h <- as.data.frame(tabla_mayo$table)
+
+plot_ly(data=h,x= ~`Class limits` ,y= ~`cf(%)`, 
+        marker = list(size = 10, color="red"),
+        type = 'scatter', mode = 'lines')%>%
+  layout(title = 'Ojiva (Dalitos Mayo)', 
+         xaxis = list(title = 'Límite superior'), 
+         yaxis = list(title = 'Pi'),
+         shapes = list(
+           # linea vertical 
+           list(type = "line", x0 = 0, x1 = 0, 
+                y0 = 0, y1 = 1, yref = "paper"),
+           # linea horizontal 
+           list(type = "line", x0 = 0, x1 = 50000, 
+                y0 = 1, y1 = 1, xref = "paper")))
+
 #=============================comparación y asociación entre variables======================================
+
+#Comparamos la variable Mayo (cantidad de delitos registrados en mayo) con la variable Estado
+
+#Diagrama de caja y brazos
+plot_ly(datos,x = ~Mayo, y = ~Estado, type = "box")
+
+#Parece que Campeche es el estado en donde se registraron menos delitos en el mes de Mayo, por otro lado,
+#El Estado de Mexico es el estado que cuenta con mas registros de delitos
+
+
+#Diagrama de puntos
+plot_ly(datos, x = ~datos$Mayo, y = ~datos$TipoDelito, color = ~datos$Estado, type = 'scatter',
+        mode = "markers")
+
+#Nuevamente vemos como los registros de delitos se concentran en valores pequeños, ahora podemos ver
+#con mas claridad el tipo de delito y estado en donde existen grandes cantidades de incidencias delictivas.
+
+#Asociación entre variables cuantitativas
+
+round(cor(datos[c(6:17)]),digits = 2) 
+
+#Es claro que nuestras variables cuantitativas están asociadas, ya que los registros de delitos entre meses
+#son muy parecidos. Ademas al ser registros consecutivos podemos ver la asociación con meses anteriores.
