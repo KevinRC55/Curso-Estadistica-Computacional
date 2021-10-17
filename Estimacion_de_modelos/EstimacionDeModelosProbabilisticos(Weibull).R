@@ -50,20 +50,16 @@ log_weibull<- function(params) {
   logw
 }
 
-# Grafica
-
 #============================ Estimación de los parámetros ?? y ?? ============================================
 
-(fit <- optim(c(alpha.hat,beta.hat),log_weibull))
+(fit<- nlm(log_weibull,c(alpha.hat,beta.hat),hessian=T))
 
-sqrt(fit$par)
-
-(alpha <- fit$par[1])
-(beta <- fit$par[2])
+(alpha <- fit$estimate[1])
+(beta <- fit$estimate[2])
 
 #Usando MASS
 library(MASS)
-(fit2<- fitdistr(y, densfun="weibull"))
+(fit2<- fitdistr(y, densfun="weibull",list(shape=alpha.hat,scale=beta.hat)))
 
 # Comparamos los metodos 
 
@@ -115,6 +111,6 @@ curve(dweibull(x, fit2$estimate[1],fit2$estimate[2]),col="blue2",lwd=2,add=T)
 legend(x = "topright", legend = c("Exponencial","Gamma","Weibull"),
        fill = c("red2", "yellow2","blue2"))
 
-#El modelo preferido es el de menor AIC, podemos ver que el modelo weibull y el modelo gamma tienen 
-# el mismo valor, si nos apoyamos en la gráfica podemos ver que  el modelo gamma es el que mejor
-# explica la distribución de lluvias en México.
+#El modelo preferido es el de menor AIC o BIC, podemos ver que el modelo Weibull y el modelo Gamma tienen 
+# el mismo valor AIC, sin embargo el modelo Gamma tiene menor valor BIC. Ademas, si nos apoyamos en la gráfica 
+# podemos ver que  el modelo gamma es el que mejor explica la distribución de lluvias en México.
