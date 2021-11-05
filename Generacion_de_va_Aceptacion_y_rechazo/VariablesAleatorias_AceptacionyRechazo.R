@@ -1,8 +1,8 @@
 #=============================== Grafica de la función de densidad de probabilidad ==========================
 
-fx <- (2*x/exp(x))^2
-
 x <- seq(0,20,0.01)
+
+fx <- (2*x/exp(x))^2
 
 plot(x, fx, type="l", col="blue2", lwd=3)
 
@@ -63,4 +63,21 @@ curve((2*x/exp(x))^2, add = T, col = "blue2", lwd=3)
 
 #============================= Verificación estadística (Media y varianza) ==================================
 
+# Calculamos el valor esperado, multiplicando por x nuestra función f(x) e integrando de 0 a infinito.
 
+Ex <- function(x){
+  x*((2*x/exp(x))^2)
+}
+
+espX <- integrate(Ex,0,9000)$value # Media teórica
+
+#Calculamos la varianza como E[X^2] - E[x]^2
+
+Ex2 <- function(x){
+  (x^2)*((2*x/exp(x))^2)  
+}
+
+varX <- integrate(Ex2,0,9000)$value - (integrate(Ex,0,9000)$value)^2 # Varianza teórica
+
+comparacion = cbind(Teóricos = c(espX, varX), Muestrales = c(mean(y), var(y)))
+row.names(comparacion) = c("E[x]", "Var(x)"); comparacion
