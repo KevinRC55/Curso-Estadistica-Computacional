@@ -1,4 +1,4 @@
-# Métodos para generación de variables aleatorias (Aceptación y rechazo)
+# Métodos para generación de variables aleatorias (Método de Composición)
 
 ## Tareas a realizar
 
